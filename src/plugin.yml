@@ -1,0 +1,5 @@
+name: TintHealth
+version: 1.2
+main: fr.mrsheepsheep.tinthealth.TintHealth
+authors: [MrSheepSheep]
+depend: [ProtocolLib]
