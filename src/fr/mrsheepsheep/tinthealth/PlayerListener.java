@@ -10,6 +10,10 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import com.sk89q.worldguard.bukkit.WGBukkit;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+
 public class PlayerListener implements Listener {
 
 	TintHealth plugin;
@@ -19,59 +23,86 @@ public class PlayerListener implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	protected void onDamage(EntityDamageEvent e){
 		if (e.getEntity() instanceof Player){
 			Player p = (Player) e.getEntity();
-			double dmg = e.getFinalDamage();
-			Damageable d = (Damageable) p;
-			int health = (int) (d.getHealth() - dmg);
-			plugin.functions.sendBorder(p, health);
+			if (plugin.functions.isTintEnabled(p)){
+				if (plugin.wg){
+					ApplicableRegionSet set = WGBukkit.getRegionManager(p.getWorld()).getApplicableRegions(p.getLocation());
+					if (set.getFlag(DefaultFlag.INVINCIBILITY) != null){
+						return;
+					}
+				}
+
+				int health = plugin.functions.getPlayerHealth(p);
+				if (health <= plugin.minhearts){
+					int maxhealth = plugin.functions.getMaxPlayerHealth(p);
+					int percentage;
+
+					if (plugin.damagemode){
+						health = (int) e.getDamage();
+						percentage = 100 - (health*100) / maxhealth;
+					}
+					else
+					{
+						health = (int) (health - e.getDamage());
+						percentage = (health*100) / maxhealth;
+					}
+
+					plugin.functions.sendBorder(p, percentage);
+				}
+			}
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	protected void onJoin(PlayerJoinEvent e){
 		if (!plugin.fade){
 			final Player p = e.getPlayer();
-			Damageable d = (Damageable) p;
-			final double health = d.getHealth();
-			Runnable run = new Runnable() {
-
-				@Override
-				public void run() {
-					plugin.functions.sendBorder(p, (int) health);
-				}
-			};
-			plugin.smallDelay(run);
+			if (plugin.functions.isTintEnabled(p)){
+				final int percentage = plugin.functions.getPlayerHealthPercentage(p);
+				Runnable run = new Runnable() {
+					@Override
+					public void run() {
+						plugin.functions.sendBorder(p, percentage);
+					}
+				};
+				plugin.smallDelay(run);
+			}
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	protected void onTeleport(PlayerTeleportEvent e){
 		if (!plugin.fade){
 			final Player p = e.getPlayer();
-			Damageable d = (Damageable) p;
-			final double health = d.getHealth();
-			Runnable run = new Runnable() {
-				@Override
-				public void run() {
-					plugin.functions.sendBorder(p, (int) health);
+			if (plugin.functions.isTintEnabled(p)){
+				if (plugin.functions.getPlayerHealth(p) <= plugin.minhearts){
+					final int percentage = plugin.functions.getPlayerHealthPercentage(p);
+					Runnable run = new Runnable() {
+						@Override
+						public void run() {
+							plugin.functions.sendBorder(p, percentage);
+						}
+					};
+					plugin.smallDelay(run);
 				}
-			};
-			plugin.smallDelay(run);
+			}
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	protected void onHeal(EntityRegainHealthEvent e){
 		if (!plugin.fade){
 			if (e.getEntity() instanceof Player){
 				Player p = (Player) e.getEntity();
-				Damageable d = (Damageable) p;
-				double heal = e.getAmount();
-				int health = (int) (d.getHealth() + heal);
-				plugin.functions.sendBorder(p, health);
+				if (plugin.functions.isTintEnabled(p)){
+					Damageable d = (Damageable) p;
+					double heal = e.getAmount();
+					int health = (int) (d.getHealth() + heal);
+					plugin.functions.sendBorder(p, health);
+				}
 			}
 		}
 	}
