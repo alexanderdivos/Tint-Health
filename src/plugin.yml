@@ -2,6 +2,7 @@ name: TintHealth
 version: 1.3
 main: fr.mrsheepsheep.tinthealth.TintHealth
 authors: [MrSheepSheep]
+softdepend: [WorldGuard]
 depend: [ProtocolLib]
 commands:
     tinthealth:

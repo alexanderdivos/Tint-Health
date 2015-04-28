@@ -8,11 +8,12 @@ import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+//import com.sk89q.worldedit.WorldEdit;
+//import com.sk89q.worldedit.bukkit.WorldEditAPI;
+//import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class TintHealth extends JavaPlugin implements Listener {
 
@@ -27,8 +28,9 @@ public class TintHealth extends JavaPlugin implements Listener {
 	protected boolean damagemode = false;
 
 	public void onEnable(){
-		plugin = this;
 
+		plugin = this;
+		
 		loadConfig();
 
 		new PlayerListener(this);
@@ -38,19 +40,12 @@ public class TintHealth extends JavaPlugin implements Listener {
 		loadPlayerToggles();
 		
 		getCommand("tinthealth").setExecutor(new THCommand(this));
-
-		Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
-		if (wg != null && wg instanceof WorldGuardPlugin){
-			this.wg = true;
-			plugin.getLogger().info("WorldGuard support enabled");
-		}
-
 	}
 	
 	public void onDisable(){
 		savePlayerToggles();
 	}
-
+	
 	public THAPI getAPI(){
 		return new THAPI(plugin);
 	}
@@ -69,6 +64,7 @@ public class TintHealth extends JavaPlugin implements Listener {
 		config.addDefault("options.fade-time", 5);
 		config.addDefault("options.intensity-modifier", 1);
 		config.addDefault("options.minimum-health", -1);
+		config.addDefault("options.worldguard-support", false);
 		
 		config.addDefault("damage-mode.enabled", false);
 
@@ -77,7 +73,8 @@ public class TintHealth extends JavaPlugin implements Listener {
 		intensity = config.getInt("options.intensity-modifier");
 		damagemode = config.getBoolean("damage-mode.enabled");
 		minhearts = config.getInt("options.minimum-health");
-
+		wg = config.getBoolean("options.worldguard-support");
+		
 		if (intensity < 1){
 			config.set("options.intensity-modifier", 1);
 			intensity = 1;
