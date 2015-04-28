@@ -11,6 +11,8 @@ The plugin will not work without it. You can then simply put TintHealth.jar in y
 Blood effect will appear every time your health is changed.
 A fade mode can be enabled in the configuration to fade the effect out of the screen over time.
 
+Please read the [Wiki](https://github.com/mrsheepsheep/Tint-Health/wiki) for a simple explaination of the config and modes.
+
 # For more, visit [the Spigot resource page](http://www.spigotmc.org/resources/tint-health.6335/)
 
 # License
