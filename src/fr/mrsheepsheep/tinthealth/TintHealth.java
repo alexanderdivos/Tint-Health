@@ -24,7 +24,6 @@ public class TintHealth extends JavaPlugin implements Listener {
 	protected int intensity = 1;
 	protected int minhearts = -1;
 	protected boolean minmode = true;
-	protected boolean wg = false;
 	protected boolean damagemode = false;
 
 	public void onEnable(){
@@ -64,7 +63,6 @@ public class TintHealth extends JavaPlugin implements Listener {
 		config.addDefault("options.fade-time", 5);
 		config.addDefault("options.intensity-modifier", 1);
 		config.addDefault("options.minimum-health", -1);
-		config.addDefault("options.worldguard-support", false);
 		
 		config.addDefault("damage-mode.enabled", false);
 
@@ -73,7 +71,6 @@ public class TintHealth extends JavaPlugin implements Listener {
 		intensity = config.getInt("options.intensity-modifier");
 		damagemode = config.getBoolean("damage-mode.enabled");
 		minhearts = config.getInt("options.minimum-health");
-		wg = config.getBoolean("options.worldguard-support");
 		
 		if (intensity < 1){
 			config.set("options.intensity-modifier", 1);

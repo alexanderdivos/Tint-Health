@@ -4,36 +4,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.Plugin;
 
 public class PlayerListener implements Listener {
 
 	TintHealth plugin;
-	boolean wgenable = false;
 	protected PlayerListener(TintHealth plugin){
 		this.plugin = plugin;
-		wgenable = plugin.wg;
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		
 	}
 	
-	@EventHandler(ignoreCancelled=true)
+	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGH)
 	protected void onDamage(EntityDamageEvent e){
 		if (e.getEntity() instanceof Player){
 			Player p = (Player) e.getEntity();
 			if (plugin.functions.isTintEnabled(p)){
-//				if (wgenable == true){
-//					ApplicableRegionSet set =  getWorldGuard().getRegionManager(p.getWorld()).getApplicableRegions(p.getLocation());
-//					if (set.getFlag(DefaultFlag.INVINCIBILITY) != null){
-//						return;
-//					}
-//				}
-
 				int health = plugin.functions.getPlayerHealth(p);
 				if (health <= plugin.minhearts){
 					int maxhealth = plugin.functions.getMaxPlayerHealth(p);
