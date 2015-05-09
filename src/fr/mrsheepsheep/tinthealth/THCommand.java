@@ -10,6 +10,7 @@ public class THCommand implements CommandExecutor {
 
 	TintHealth plugin;
 	String heart = "\u2764 ";
+	String bloodurl = "http://download1627.mediafire.com/58crbw4351og/wpc5hr8s1lca9ph/BloodScreen.zip";
 
 	public THCommand(TintHealth plugin){
 		this.plugin = plugin;
@@ -48,6 +49,20 @@ public class THCommand implements CommandExecutor {
 				else
 					sender.sendMessage("This is an in-game only command !");
 				break;
+			case "blood":
+				if (sender instanceof Player){
+					String prefix = ChatColor.DARK_RED + heart + ChatColor.RED;
+					Player p = (Player) sender;
+					if (p.hasPermission("tinthealth.blood")){
+						p.setResourcePack(bloodurl);
+						p.sendMessage(prefix + "Blood texture has been sent. If you did not enable server resource pack, nothing will happen.");
+					}
+					else
+						p.sendMessage("You don't have permission");
+				}
+				else
+					sender.sendMessage("This is an in-game only command !");
+				break;
 			default:
 				sendHelpMessage(sender);
 				break;
@@ -71,6 +86,7 @@ public class THCommand implements CommandExecutor {
 			sender.sendMessage(prefix + "/tint toggle" + ChatColor.RED + " - Enable / Disable the tint for you");
 		if (!sender.hasPermission("tinthealth.toggle") && !sender.hasPermission("tinthealth.reload"))
 			sender.sendMessage(prefix + "None !");
+		sender.sendMessage(prefix + "/tint blood" + ChatColor.RED + " - Install a blood texture. Credits goes to Macaron on the Spigot forums !");
 	}
 
 }
