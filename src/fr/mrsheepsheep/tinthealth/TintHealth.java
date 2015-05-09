@@ -5,15 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-//import com.sk89q.worldedit.WorldEdit;
-//import com.sk89q.worldedit.bukkit.WorldEditAPI;
-//import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+
 
 public class TintHealth extends JavaPlugin implements Listener {
 
@@ -25,14 +24,18 @@ public class TintHealth extends JavaPlugin implements Listener {
 	protected int minhearts = -1;
 	protected boolean minmode = true;
 	protected boolean damagemode = false;
+	protected boolean enabled = true;
 
 	public void onEnable(){
 
 		plugin = this;
+
+		checkVersion();
 		
 		loadConfig();
 
-		new PlayerListener(this);
+		if (enabled)
+			new PlayerListener(this);
 
 		functions = new THFunctions(this);
 		
@@ -41,6 +44,15 @@ public class TintHealth extends JavaPlugin implements Listener {
 		getCommand("tinthealth").setExecutor(new THCommand(this));
 	}
 	
+	private void checkVersion() {
+		String version = Bukkit.getBukkitVersion();
+		if (!version.startsWith("1.8")){
+			plugin.setEnabled(false);
+			plugin.getLogger().warning(version + " is not compatible with Tint Health ! Disabling plugin.");
+		}
+		
+	}
+
 	public void onDisable(){
 		savePlayerToggles();
 	}
@@ -63,6 +75,7 @@ public class TintHealth extends JavaPlugin implements Listener {
 		config.addDefault("options.fade-time", 5);
 		config.addDefault("options.intensity-modifier", 1);
 		config.addDefault("options.minimum-health", -1);
+		config.addDefault("options.enabled", true);
 		
 		config.addDefault("damage-mode.enabled", false);
 
@@ -71,6 +84,7 @@ public class TintHealth extends JavaPlugin implements Listener {
 		intensity = config.getInt("options.intensity-modifier");
 		damagemode = config.getBoolean("damage-mode.enabled");
 		minhearts = config.getInt("options.minimum-health");
+		enabled = config.getBoolean("options.enabled");
 		
 		if (intensity < 1){
 			config.set("options.intensity-modifier", 1);
