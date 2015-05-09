@@ -53,4 +53,18 @@ public class THAPI {
 		// It also detects if fade mode is enabled.
 		functions.sendBorder(p, 100 - percentage);
 	}
+	
+	public boolean isTHEnabled(){
+		return plugin.enabled;
+	}
+	
+	public void enable(){
+		// Enables default plugin behavior if disabled
+		plugin.enabled = true;
+	}
+	
+	public void disable(){
+		// Disables default plugin behavior
+		plugin.enabled = false;
+	}
 }
