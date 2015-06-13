@@ -4,8 +4,8 @@ It uses the Minecraft Vanilla Worldborder warning effect to create a blood effec
 _Your game graphic settings must be set to Fancy in order to see the effect._
 
 # Install
-First of all, you need the latest version of [ProtocolLib](http://dev.bukkit.org/bukkit-plugins/protocollib/).
-The plugin will not work without it. You can then simply put TintHealth.jar in your plugins folder and start your server.
+Like all other plugins, put TintHealth.jar in your plugin folder and you're done !
+You can then take a look at the configuration file.
 
 # How to use
 Blood effect will appear every time your health is changed.
