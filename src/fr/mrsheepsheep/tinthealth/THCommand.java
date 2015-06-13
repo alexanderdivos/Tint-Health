@@ -10,7 +10,7 @@ public class THCommand implements CommandExecutor {
 
 	TintHealth plugin;
 	final String heart = "\u2764 ";
-	final String bloodurl = "http://download1627.mediafire.com/58crbw4351og/wpc5hr8s1lca9ph/BloodScreen.zip";
+	final String bloodurl = "http://download945.mediafire.com/4r946ie923xg/oq6hspu301hiv3c/BloodScreen+by+Macaron.zip";
 
 	public THCommand(TintHealth plugin){
 		this.plugin = plugin;
