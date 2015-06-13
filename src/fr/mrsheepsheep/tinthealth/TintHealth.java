@@ -30,6 +30,14 @@ public class TintHealth extends JavaPlugin implements Listener {
 
 		plugin = this;
 
+	    try {
+	        Metrics metrics = new Metrics(this);
+	        metrics.start();
+	    } catch (IOException e) {
+	        plugin.getLogger().warning("Metrics cannot be started");
+	        e.printStackTrace();
+	    }
+	    
 		checkVersion();
 		
 		loadConfig();
