@@ -37,10 +37,26 @@ public class THFunctions {
 			constructor = getClass("net.minecraft.server", "PacketPlayOutWorldBorder").getConstructor(getClass("net.minecraft.server", "WorldBorder"), enumclass);
 			border_constructor = getClass("net.minecraft.server", "WorldBorder").getConstructor();
 			
-			center = getClass("net.minecraft.server", "WorldBorder").getMethod("setCenter", double.class, double.class);
-			distance = getClass("net.minecraft.server", "WorldBorder").getMethod("setWarningDistance", int.class);
-			time = getClass("net.minecraft.server", "WorldBorder").getMethod("setWarningTime", int.class);
-			movement = getClass("net.minecraft.server", "WorldBorder").getMethod("transitionSizeBetween", double.class, double.class, long.class);
+			Method[] methods = getClass("net.minecraft.server", "WorldBorder").getMethods();
+
+			String setCenter = "setCenter";
+			String setWarningDistance = "setWarningDistance";
+			String setWarningTime = "setWarningTime";
+			String transitionSizeBetween = "transitionSizeBetween";
+			
+			if (!inClass(methods, setCenter))
+				setCenter = "c";
+			if (!inClass(methods, setWarningDistance))
+				setWarningDistance = "c";
+			if (!inClass(methods, setWarningTime))
+				setWarningTime = "b";
+			if (!inClass(methods, transitionSizeBetween))
+				transitionSizeBetween = "a";
+			
+			center = getClass("net.minecraft.server", "WorldBorder").getMethod(setCenter, double.class, double.class);
+			distance = getClass("net.minecraft.server", "WorldBorder").getMethod(setWarningDistance, int.class);
+			time = getClass("net.minecraft.server", "WorldBorder").getMethod(setWarningTime, int.class);
+			movement = getClass("net.minecraft.server", "WorldBorder").getMethod(transitionSizeBetween, double.class, double.class, long.class);
 			
 			for (Object o: enumclass.getEnumConstants()) {
 				if (o.toString().equals("INITIALIZE")) {
@@ -51,6 +67,13 @@ public class THFunctions {
 	    } catch (Exception e) {
 			e.printStackTrace();
 		} 
+	}
+	
+	private static boolean inClass(Method[] methods, String methodName){
+		for (Method m : methods)
+			if (m.getName() == methodName)
+				return true;
+		return false;
 	}
 	
 	private static Class<?> getClass(String prefix, String name) throws Exception {
