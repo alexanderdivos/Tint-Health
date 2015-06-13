@@ -1,5 +1,5 @@
 name: TintHealth
-version: 1.4
+version: 1.4.1
 main: fr.mrsheepsheep.tinthealth.TintHealth
 authors: [MrSheepSheep]
 commands:

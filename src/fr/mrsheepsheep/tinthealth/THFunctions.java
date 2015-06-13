@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
@@ -96,15 +98,18 @@ public class THFunctions {
 	protected void fadeBorder(Player p, int percentage, long time){
 		int dist = -10000 * percentage + 1300000;
 		sendWorldBorderPacket(p, 0, 200000D, (double) dist, (long) 1000 * time + 4000); //Add 4000 to make sure the "security" zone does not count in the fade time
+		plugin.debug("Sent fade border for player " + p.getName());
 	}
 
 	protected void removeBorder(Player p) {
 		sendWorldBorderPacket(p, 0, 200000D, 200000D, 0);
+		plugin.debug("Removed tint for player " + p.getName());
 	}
 
 	protected void setBorder(Player p, int percentage){
 		int dist = -10000 * percentage + 1300000;
 		sendWorldBorderPacket(p, dist, 200000D, 200000D, 0);
+		plugin.debug("Set " + percentage + "% tint for player " + p.getName());
 	}
 
 	protected void sendWorldBorderPacket(Player p, int dist, double oldradius, double newradius, long delay) {
@@ -122,8 +127,7 @@ public class THFunctions {
 			sendPacket.invoke(player_connection.get(handle.invoke(p)), packet);
 		} catch(Exception x) {
 			x.printStackTrace();
-		}
-		
+		}		
 //			Old ProtocollLib Version:
 //		
 //		border.getWorldBorderActions().write(0, WorldBorderAction.INITIALIZE);
