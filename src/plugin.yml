@@ -1,8 +1,7 @@
 name: TintHealth
-version: 1.3.2
+version: 1.4.1
 main: fr.mrsheepsheep.tinthealth.TintHealth
 authors: [MrSheepSheep]
-depend: [ProtocolLib]
 commands:
     tinthealth:
         description: TintHealth base command

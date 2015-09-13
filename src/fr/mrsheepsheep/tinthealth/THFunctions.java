@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
@@ -37,10 +39,26 @@ public class THFunctions {
 			constructor = getClass("net.minecraft.server", "PacketPlayOutWorldBorder").getConstructor(getClass("net.minecraft.server", "WorldBorder"), enumclass);
 			border_constructor = getClass("net.minecraft.server", "WorldBorder").getConstructor();
 			
-			center = getClass("net.minecraft.server", "WorldBorder").getMethod("setCenter", double.class, double.class);
-			distance = getClass("net.minecraft.server", "WorldBorder").getMethod("setWarningDistance", int.class);
-			time = getClass("net.minecraft.server", "WorldBorder").getMethod("setWarningTime", int.class);
-			movement = getClass("net.minecraft.server", "WorldBorder").getMethod("transitionSizeBetween", double.class, double.class, long.class);
+			Method[] methods = getClass("net.minecraft.server", "WorldBorder").getMethods();
+
+			String setCenter = "setCenter";
+			String setWarningDistance = "setWarningDistance";
+			String setWarningTime = "setWarningTime";
+			String transitionSizeBetween = "transitionSizeBetween";
+			
+			if (!inClass(methods, setCenter))
+				setCenter = "c";
+			if (!inClass(methods, setWarningDistance))
+				setWarningDistance = "c";
+			if (!inClass(methods, setWarningTime))
+				setWarningTime = "b";
+			if (!inClass(methods, transitionSizeBetween))
+				transitionSizeBetween = "a";
+			
+			center = getClass("net.minecraft.server", "WorldBorder").getMethod(setCenter, double.class, double.class);
+			distance = getClass("net.minecraft.server", "WorldBorder").getMethod(setWarningDistance, int.class);
+			time = getClass("net.minecraft.server", "WorldBorder").getMethod(setWarningTime, int.class);
+			movement = getClass("net.minecraft.server", "WorldBorder").getMethod(transitionSizeBetween, double.class, double.class, long.class);
 			
 			for (Object o: enumclass.getEnumConstants()) {
 				if (o.toString().equals("INITIALIZE")) {
@@ -51,6 +69,13 @@ public class THFunctions {
 	    } catch (Exception e) {
 			e.printStackTrace();
 		} 
+	}
+	
+	private static boolean inClass(Method[] methods, String methodName){
+		for (Method m : methods)
+			if (m.getName() == methodName)
+				return true;
+		return false;
 	}
 	
 	private static Class<?> getClass(String prefix, String name) throws Exception {
@@ -73,15 +98,18 @@ public class THFunctions {
 	protected void fadeBorder(Player p, int percentage, long time){
 		int dist = -10000 * percentage + 1300000;
 		sendWorldBorderPacket(p, 0, 200000D, (double) dist, (long) 1000 * time + 4000); //Add 4000 to make sure the "security" zone does not count in the fade time
+		plugin.debug("Sent fade border for player " + p.getName());
 	}
 
 	protected void removeBorder(Player p) {
 		sendWorldBorderPacket(p, 0, 200000D, 200000D, 0);
+		plugin.debug("Removed tint for player " + p.getName());
 	}
 
 	protected void setBorder(Player p, int percentage){
 		int dist = -10000 * percentage + 1300000;
 		sendWorldBorderPacket(p, dist, 200000D, 200000D, 0);
+		plugin.debug("Set " + percentage + "% tint for player " + p.getName());
 	}
 
 	protected void sendWorldBorderPacket(Player p, int dist, double oldradius, double newradius, long delay) {
@@ -99,8 +127,7 @@ public class THFunctions {
 			sendPacket.invoke(player_connection.get(handle.invoke(p)), packet);
 		} catch(Exception x) {
 			x.printStackTrace();
-		}
-		
+		}		
 //			Old ProtocollLib Version:
 //		
 //		border.getWorldBorderActions().write(0, WorldBorderAction.INITIALIZE);

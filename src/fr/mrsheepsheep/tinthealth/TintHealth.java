@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
@@ -25,15 +26,22 @@ public class TintHealth extends JavaPlugin implements Listener {
 	protected boolean minmode = true;
 	protected boolean damagemode = false;
 	protected boolean enabled = true;
+	protected boolean debug = false;
 
 	public void onEnable(){
 
 		plugin = this;
 
+	    try {
+	        Metrics metrics = new Metrics(this);
+	        metrics.start();
+	    } catch (IOException e) {
+	        plugin.getLogger().warning("Metrics cannot be started");
+	        e.printStackTrace();
+	    }
+	    
 		checkVersion();
-		
 		loadConfig();
-
 		if (enabled)
 			new PlayerListener(this);
 
@@ -76,7 +84,7 @@ public class TintHealth extends JavaPlugin implements Listener {
 		config.addDefault("options.intensity-modifier", 1);
 		config.addDefault("options.minimum-health", -1);
 		config.addDefault("options.enabled", true);
-		
+		config.addDefault("options.debug", false);
 		config.addDefault("damage-mode.enabled", false);
 
 		fade = config.getBoolean("options.fade-enabled");
@@ -85,7 +93,7 @@ public class TintHealth extends JavaPlugin implements Listener {
 		damagemode = config.getBoolean("damage-mode.enabled");
 		minhearts = config.getInt("options.minimum-health");
 		enabled = config.getBoolean("options.enabled");
-		
+		debug = config.getBoolean("options.debug");
 		if (intensity < 1){
 			config.set("options.intensity-modifier", 1);
 			intensity = 1;
@@ -130,5 +138,10 @@ public class TintHealth extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 		plugin.getLogger().info(list.size() + " player toggles saved");
+	}
+	
+	public void debug(String message){
+		if (debug)
+			plugin.getLogger().info("[DEBUG] " + message);
 	}
 }
